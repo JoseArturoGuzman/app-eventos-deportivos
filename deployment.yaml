@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-eventos-deportivos
+  labels:
+    app: app-eventos-deportivos
+spec:
+  replicas: 2  # Número de pods a correr
+  selector:
+    matchLabels:
+      app: app-eventos-deportivos
+  template:
+    metadata:
+      labels:
+        app: app-eventos-deportivos
+    spec:
+      containers:
+      - name: app-eventos-deportivos
+        image: joseartguzman/app-eventos-deportivos:latest  # 👈 Usa tu imagen
+        ports:
+        - containerPort: 80  # Porque tu contenedor expone el puerto 80 (nginx)
+        resources:   # 👈 Aquí defines el "tema de recursos" como pediste
+          requests:
+            cpu: "100m"   # pide 0.1 CPU como mínimo
+            memory: "128Mi"  # pide 128MB RAM como mínimo
+          limits:
+            cpu: "500m"   # máximo usa 0.5 CPU
+            memory: "512Mi"  # máximo usa 512MB RAM

@@ -1,0 +1,41 @@
+name: Deploy App Eventos Deportivos to GKE
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+  GKE_CLUSTER: autopilot-cluster-1   # nombre de tu cluster
+  GKE_ZONE: us-central1-c          # zona de tu cluster
+
+jobs:
+  deploy:
+    name: Deploy to GKE
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout código fuente
+        uses: actions/checkout@v4
+
+      - name: Autenticar en GCP
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: '${{ secrets.GKE_SA_KEY }}'
+
+      - name: Obtener credenciales de GKE
+        uses: google-github-actions/get-gke-credentials@v0
+        with:
+          cluster_name: ${{ env.GKE_CLUSTER }}
+          location: ${{ env.GKE_ZONE }}
+
+      - name: Aplicar Deployment y Service
+        run: |
+          kubectl apply -f deployment.yaml
+          kubectl apply -f service.yaml
+
+      - name: Verificar rollout del deployment
+        run: |
+          kubectl rollout status deployment/app-eventos-deportivos

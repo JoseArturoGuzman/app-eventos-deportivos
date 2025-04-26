@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-eventos-deportivos-service
+spec:
+  selector:
+    app: app-eventos-deportivos
+  ports:
+    - protocol: TCP
+      port: 80       # Puerto expuesto en Kubernetes
+      targetPort: 80 # Puerto en el contenedor
+  type: LoadBalancer  # 👈 Crea una IP pública para acceder (ideal en nube)
